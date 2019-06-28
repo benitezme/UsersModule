@@ -18,10 +18,10 @@ const {
 } = graphql // Destructuring this variables from inside the package.
 
 let roles = [
-  {id: '1', name: 'Not Defined'},
-  {id: '2', name: 'Developer'},
-  {id: '3', name: 'Trader'},
-  {id: '4', name: 'Data Analyst'}
+  { id: '1', name: 'Not Defined' },
+  { id: '2', name: 'Developer' },
+  { id: '3', name: 'Trader' },
+  { id: '4', name: 'Data Analyst' }
 ]
 
 // Types
@@ -29,26 +29,26 @@ let roles = [
 const UserType = new GraphQLObjectType({
   name: 'User',
   fields: () => ({
-    id: { type: GraphQLID},
-    authId: { type: GraphQLString},
-    referrerId: {type: GraphQLString},
-    alias: {type: GraphQLString},
-    firstName: {type: GraphQLString},
-    middleName: {type: GraphQLString},
-    lastName: {type: GraphQLString},
-    bio: {type: GraphQLString},
-    email: {type: GraphQLString},
-    emailVerified: {type: GraphQLInt},
-    isDeveloper: {type: GraphQLInt},
-    isTrader: {type: GraphQLInt},
-    isDataAnalyst: {type: GraphQLInt},
-    avatarHandle: {type: GraphQLString},
-    avatarChangeDate: {type: GraphQLString},
-    sessionToken: {type: GraphQLString},
+    id: { type: GraphQLID },
+    authId: { type: GraphQLString },
+    referrerId: { type: GraphQLString },
+    alias: { type: GraphQLString },
+    firstName: { type: GraphQLString },
+    middleName: { type: GraphQLString },
+    lastName: { type: GraphQLString },
+    bio: { type: GraphQLString },
+    email: { type: GraphQLString },
+    emailVerified: { type: GraphQLInt },
+    isDeveloper: { type: GraphQLInt },
+    isTrader: { type: GraphQLInt },
+    isDataAnalyst: { type: GraphQLInt },
+    avatarHandle: { type: GraphQLString },
+    avatarChangeDate: { type: GraphQLString },
+    sessionToken: { type: GraphQLString },
     role: {
       type: RoleType,
-      resolve (parent, args) {
-        return _.find(roles, {id: parent.roleId})
+      resolve(parent, args) {
+        return _.find(roles, { id: parent.roleId })
       }
     }
   })
@@ -57,16 +57,16 @@ const UserType = new GraphQLObjectType({
 const DescendentType = new GraphQLObjectType({
   name: 'Descendent',
   fields: () => ({
-    id: { type: GraphQLID},
-    referrerId: {type: GraphQLString},
-    alias: {type: GraphQLString},
-    firstName: {type: GraphQLString},
-    middleName: {type: GraphQLString},
-    lastName: {type: GraphQLString},
+    id: { type: GraphQLID },
+    referrerId: { type: GraphQLString },
+    alias: { type: GraphQLString },
+    firstName: { type: GraphQLString },
+    middleName: { type: GraphQLString },
+    lastName: { type: GraphQLString },
     descendents: {
       type: new GraphQLList(DescendentType),
-      resolve (parent, args) {
-        return User.find({referrerId: parent.id})
+      resolve(parent, args) {
+        return User.find({ referrerId: parent.id })
       }
     }
   })
@@ -75,12 +75,12 @@ const DescendentType = new GraphQLObjectType({
 const RoleType = new GraphQLObjectType({
   name: 'Role',
   fields: () => ({
-    id: { type: GraphQLID},
-    name: {type: GraphQLString},
+    id: { type: GraphQLID },
+    name: { type: GraphQLString },
     users: {
       type: new GraphQLList(UserType),
-      resolve (parent, args) {
-        return User.find({roleId: parent.id})
+      resolve(parent, args) {
+        return User.find({ roleId: parent.id })
       }
     }
   })
@@ -93,21 +93,21 @@ const RootQuery = new GraphQLObjectType({
   fields: {
     user: {
       type: UserType,
-      args: {id: {type: GraphQLID}},
-      resolve (parent, args) {
-          // Code to get data from data source.
+      args: { id: { type: GraphQLID } },
+      resolve(parent, args) {
+        // Code to get data from data source.
         return User.findById(args.id)
       }
     },
     userByAuthId: {
       type: UserType,
-      args: {authId: {type: GraphQLString}},
-      resolve (parent, args) {
-          // Code to get data from data source.
+      args: { authId: { type: GraphQLString } },
+      resolve(parent, args) {
+        // Code to get data from data source.
 
         if (process.env.INFO_LOG === true) { logger.debug('[INFO] ' + MODULE_NAME + ' -> RootQuery -> userByAuthId -> resolve -> Entering function.') }
 
-          /* In order to be able to wait for asyc calls to the database, we need to return a promise to GraphQL. */
+        /* In order to be able to wait for asyc calls to the database, we need to return a promise to GraphQL. */
 
         const promiseToGraphQL = new Promise((resolve, reject) => {
           if (process.env.INFO_LOG === true) { logger.debug('[INFO] ' + MODULE_NAME + ' -> RootQuery -> userByAuthId -> resolve -> Promise -> Entering function.') }
@@ -115,7 +115,7 @@ const RootQuery = new GraphQLObjectType({
 
           findUserByAuthId(args.authId, onUserFound)
 
-          function onUserFound (err, responseToGraphQL) {
+          function onUserFound(err, responseToGraphQL) {
             if (process.env.INFO_LOG === true) { logger.debug('[INFO] ' + MODULE_NAME + ' -> RootQuery -> userByAuthId -> resolve -> Promise -> onUserFound -> Entering function.') }
             if (process.env.INFO_LOG === true) { logger.debug('[INFO] ' + MODULE_NAME + ' -> RootQuery -> userByAuthId -> resolve -> Promise -> onUserFound -> responseToGraphQL = ' + JSON.stringify(responseToGraphQL)) }
 
@@ -133,36 +133,36 @@ const RootQuery = new GraphQLObjectType({
     },
     role: {
       type: RoleType,
-      args: {id: {type: GraphQLID}},
-      resolve (parent, args) {
-          // Code to get data from data source.
-        return _.find(roles, {id: args.id})
+      args: { id: { type: GraphQLID } },
+      resolve(parent, args) {
+        // Code to get data from data source.
+        return _.find(roles, { id: args.id })
       }
     },
     users: {
       type: new GraphQLList(UserType),
-      resolve (parent, args) {
+      resolve(parent, args) {
         return User.find({})
       }
     },
     roles: {
       type: new GraphQLList(RoleType),
-      resolve (parent, args) {
+      resolve(parent, args) {
         return roles
       }
     },
     usersSearch: {
       type: new GraphQLList(UserType),
-      args: {alias: {type: GraphQLString}, firstName: {type: GraphQLString}, middleName: {type: GraphQLString}, lastName: {type: GraphQLString}},
-      resolve (parent, args) {
+      args: { alias: { type: GraphQLString }, firstName: { type: GraphQLString }, middleName: { type: GraphQLString }, lastName: { type: GraphQLString } },
+      resolve(parent, args) {
         if (process.env.INFO_LOG === true) { logger.debug('[INFO] ' + MODULE_NAME + ' -> RootQuery -> usersSearch -> resolve -> Entering function.') }
 
         let mongoQuery = { $or: [] }
 
-        if (args.alias !== null && args.alias !== '') { mongoQuery.$or.push({alias: args.alias}) }
-        if (args.firstName !== null && args.firstName !== '') { mongoQuery.$or.push({firstName: args.firstName}) }
-        if (args.middleName !== null && args.middleName !== '') { mongoQuery.$or.push({middleName: args.middleName}) }
-        if (args.lastName !== null && args.lastName !== '') { mongoQuery.$or.push({lastName: args.lastName}) }
+        if (args.alias !== null && args.alias !== '') { mongoQuery.$or.push({ alias: args.alias }) }
+        if (args.firstName !== null && args.firstName !== '') { mongoQuery.$or.push({ firstName: args.firstName }) }
+        if (args.middleName !== null && args.middleName !== '') { mongoQuery.$or.push({ middleName: args.middleName }) }
+        if (args.lastName !== null && args.lastName !== '') { mongoQuery.$or.push({ lastName: args.lastName }) }
 
         if (mongoQuery.$or.length === 0) { mongoQuery = {} }
 
@@ -171,11 +171,11 @@ const RootQuery = new GraphQLObjectType({
     },
     descendents: {
       type: new GraphQLList(DescendentType),
-      args: {id: {type: GraphQLString}},
-      resolve (parent, args) {
+      args: { id: { type: GraphQLString } },
+      resolve(parent, args) {
         if (process.env.INFO_LOG === true) { logger.debug('[INFO] ' + MODULE_NAME + ' -> RootQuery -> descendents -> resolve -> Entering function.') }
 
-        return User.find({referrerId: args.id})
+        return User.find({ referrerId: args.id })
       }
     }
   }
@@ -189,9 +189,9 @@ const Mutation = new GraphQLObjectType({
     authenticate: {
       type: UserType,
       args: {
-        idToken: {type: new GraphQLNonNull(GraphQLString)}
+        idToken: { type: new GraphQLNonNull(GraphQLString) }
       },
-      resolve (parent, args) {
+      resolve(parent, args) {
         if (process.env.INFO_LOG === true) { logger.debug('[INFO] ' + MODULE_NAME + ' -> Mutation -> authenticate -> resolve -> Entering function.') }
 
         /* In order to be able to wait for asyc calls to the database, and authorization authority, we need to return a promise to GraphQL. */
@@ -200,7 +200,7 @@ const Mutation = new GraphQLObjectType({
           if (process.env.INFO_LOG === true) { logger.debug('[INFO] ' + MODULE_NAME + ' -> Mutation -> authenticate -> resolve -> Promise -> Entering function.') }
           authenticate(args.idToken, onAuthenticated)
 
-          function onAuthenticated (err, responseToGraphQL) {
+          function onAuthenticated(err, responseToGraphQL) {
             if (process.env.INFO_LOG === true) { logger.debug('[INFO] ' + MODULE_NAME + ' -> Mutation -> authenticate -> resolve -> Promise -> onAuthenticated -> Entering function.') }
             if (process.env.INFO_LOG === true) { logger.debug('[INFO] ' + MODULE_NAME + ' -> Mutation -> authenticate -> resolve -> Promise -> onAuthenticated -> responseToGraphQL = ' + JSON.stringify(responseToGraphQL)) }
 
@@ -219,16 +219,16 @@ const Mutation = new GraphQLObjectType({
     updateUser: {
       type: UserType,
       args: {
-        firstName: {type: GraphQLString},
-        middleName: {type: GraphQLString},
-        lastName: {type: GraphQLString},
-        bio: {type: GraphQLString},
-        isDeveloper: {type: GraphQLInt},
-        isTrader: {type: GraphQLInt},
-        isDataAnalyst: {type: GraphQLInt},
-        roleId: {type: new GraphQLNonNull(GraphQLString)}
+        firstName: { type: GraphQLString },
+        middleName: { type: GraphQLString },
+        lastName: { type: GraphQLString },
+        bio: { type: GraphQLString },
+        isDeveloper: { type: GraphQLInt },
+        isTrader: { type: GraphQLInt },
+        isDataAnalyst: { type: GraphQLInt },
+        roleId: { type: new GraphQLNonNull(GraphQLString) }
       },
-      resolve (parent, args, context) {
+      resolve(parent, args, context) {
         let key = {
           _id: context.userId
         }
@@ -250,9 +250,9 @@ const Mutation = new GraphQLObjectType({
     updateUserReferrer: {
       type: UserType,
       args: {
-        referrerId: {type: GraphQLString}
+        referrerId: { type: GraphQLString }
       },
-      resolve (parent, args, context) {
+      resolve(parent, args, context) {
         let key = {
           _id: context.userId,
           referrerId: null
@@ -268,10 +268,10 @@ const Mutation = new GraphQLObjectType({
     updateSessionToken: {
       type: UserType,
       args: {
-        userId: {type: GraphQLString},
-        sessionToken: {type: GraphQLString}
+        userId: { type: GraphQLString },
+        sessionToken: { type: GraphQLString }
       },
-      resolve (parent, args) {
+      resolve(parent, args) {
         let key = {
           _id: decodeURI(args.userId)
         }
@@ -286,7 +286,7 @@ const Mutation = new GraphQLObjectType({
   }
 })
 
-function findUserByAuthId (authId, callBackFunction) {
+function findUserByAuthId(authId, callBackFunction) {
   try {
     if (process.env.INFO_LOG === true) { logger.debug('[INFO] ' + MODULE_NAME + ' -> findUserByAuthId -> Entering function.') }
     if (process.env.INFO_LOG === true) { logger.debug('[INFO] ' + MODULE_NAME + ' -> findUserByAuthId -> authId = ' + authId) }
@@ -299,9 +299,9 @@ function findUserByAuthId (authId, callBackFunction) {
       return
     }
 
-    User.findOne({authId: authId}, onUserReceived)
+    User.findOne({ authId: authId }, onUserReceived)
 
-    function onUserReceived (err, user) {
+    function onUserReceived(err, user) {
       if (err) {
         if (ERROR_LOG === true) { logger.error('[ERROR] ' + MODULE_NAME + ' -> findUserByAuthId -> onUserReceived -> Database Error.') }
         if (ERROR_LOG === true) { logger.error('[ERROR] ' + MODULE_NAME + ' -> findUserByAuthId -> onUserReceived -> err = ' + err) }
@@ -342,7 +342,7 @@ function findUserByAuthId (authId, callBackFunction) {
   }
 }
 
-function authenticate (encodedToken, callBackFunction) {
+function authenticate(encodedToken, callBackFunction) {
   try {
     if (process.env.INFO_LOG === true) { logger.debug('[INFO] ' + MODULE_NAME + ' -> authenticate -> Entering function.') }
 
@@ -353,7 +353,7 @@ function authenticate (encodedToken, callBackFunction) {
 
     tokenDecoder(encodedToken, onValidated)
 
-    function onValidated (err, decodedToken) {
+    function onValidated(err, decodedToken) {
       if (process.env.INFO_LOG === true) { logger.debug('[INFO] ' + MODULE_NAME + ' -> authenticate -> onValidated -> Entering function.') }
 
       if (err.result !== global.DEFAULT_OK_RESPONSE.result) {
@@ -376,7 +376,7 @@ function authenticate (encodedToken, callBackFunction) {
 
       findUserByAuthId(authId, onUserFound)
 
-      function onUserFound (err, user) {
+      function onUserFound(err, user) {
         if (process.env.INFO_LOG === true) { logger.debug('[INFO] ' + MODULE_NAME + ' -> authenticate -> onValidated -> onUserFound -> Entering function.') }
 
         if (err.result === global.DEFAULT_FAIL_RESPONSE.result) {
@@ -440,7 +440,7 @@ function authenticate (encodedToken, callBackFunction) {
 
           newUser.save(onSaved)
 
-          function onSaved (err, savedUser) {
+          function onSaved(err, savedUser) {
             if (process.env.INFO_LOG === true) { logger.debug('[INFO] ' + MODULE_NAME + ' -> authenticate -> onValidated -> onUserFound -> onSaved -> Entering function.') }
 
             if (err) {
