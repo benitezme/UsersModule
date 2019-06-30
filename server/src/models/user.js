@@ -5,7 +5,12 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const userSchema = new Schema({
-  authId: String,
+  authId: {
+    type: String,
+    index: true,
+    unique: true,
+    dropDups: true
+  },
   referrerId: String,
   creationDate: Number,
   alias: String,
@@ -24,5 +29,6 @@ const userSchema = new Schema({
   sessionToken: String
 })
 
-global.UserSchema = global.UserSchema || mongoose.model('User', userSchema)
-module.exports = global.UserSchema
+const User = mongoose.model('User', userSchema)
+
+export default User
