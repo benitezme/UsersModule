@@ -101,7 +101,6 @@ const RootQuery = new GraphQLObjectType({
       type: UserType,
       args: { authId: { type: GraphQLString } },
       async resolve(parent, args) {
-        logger.debug('userByAuthId -> Entering function.')
         let user = await User.findOne({ authId: args.authId })
         return user
       }
